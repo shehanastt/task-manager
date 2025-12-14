@@ -65,15 +65,6 @@ const UpdateTask = () => {
     );
   }
 
-  // if (error && !isSubmitting) {
-  //   return (
-  //     <div>
-  //       <p>{error}</p>
-  //       <button onClick={() => window.location.reload()}>Retry</button>
-  //     </div>
-  //   );
-  // }
-
   return (
     <div className="max-w-md mx-auto mt-8 p-6">
       <h2 className="text-2xl font-semibold mb-6 text-gray-800 dark:text-gray-100">Update Task</h2>

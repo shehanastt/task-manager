@@ -3,18 +3,11 @@ import { Link, useNavigate } from "react-router-dom";
 import api from "../api";
 
 const ListAllTasks = () => {
-  const navigate = useNavigate();
   const [tasks, setTasks] = useState([]);
   const [status, setStatus] = useState("all"); 
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [updatingTasks, setUpdatingTasks] = useState(new Set());
-
-  // const handleLogout = () => {
-  //   localStorage.removeItem('token');
-  //   localStorage.removeItem('user');
-  //   navigate('/');
-  // };
 
   useEffect(() => {
     const fetchTasks = async () => {
@@ -77,12 +70,6 @@ const ListAllTasks = () => {
           >
             + Add New Task
           </Link>
-          {/* <button
-            onClick={handleLogout}
-            className="inline-flex items-center px-4 py-2.5 bg-red-200 hover:bg-red-300 dark:bg-red-600 dark:hover:bg-red-700 text-red-800 dark:text-white font-medium rounded-md transition-colors duration-200"
-          >
-            Logout
-          </button> */}
         </div>
       </div>
 

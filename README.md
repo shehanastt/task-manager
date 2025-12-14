@@ -87,20 +87,6 @@ DELETE /api/task/:id → Delete task
 PATCH /api/task/view/:id → View a task
 
 
-## Environment Variables
-
-### Backend `.env`
-PORT=5000
-MONGO_URI=mongodb+srv://shehashehanas:wD6dLNFwe8cVCgkm@mycluster.im47jjy.mongodb.net/task-app
-SECRET_KEY="secret_key"
-JWT_TOKEN_EXPIRY=1d
-
-### Frontend `.env`
-
-BACKEND_URL=http://localhost:5000
-
-
-
 ## Getting Started
 
 ### 1. Clone the Repository
