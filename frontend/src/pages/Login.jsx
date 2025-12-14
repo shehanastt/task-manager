@@ -1,8 +1,8 @@
 import * as yup from 'yup'
 import { useNavigate } from 'react-router-dom';
-import api from '../api';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
+import api from '../api';
 
 const schema = yup.object().shape({
   email: yup.string().required("Email is required").email("Invalid email format"),

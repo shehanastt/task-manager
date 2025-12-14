@@ -5,9 +5,9 @@ import ListAllTasks from './components/ListAllTasks';
 import ViewTask from './components/ViewTask';
 import AddTask from './components/AddTask';
 import UpdateTask from './components/UpdateTask';
-import Register from './components/Register';
 import Home from './pages/HomePage';
-import Login from './components/Login';
+import Login from './pages/Login';
+import Register from './pages/Register';
 
 function App() {
   const [theme, setTheme] = useState(
