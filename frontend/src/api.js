@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-    baseURL:`${process.env.BACKEND_URL}/api`,
+    baseURL:'https://task-manager-r93o.onrender.com/api',
     timeout:5000,
 });
 
