@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useEffect, useState, useMemo } from "react";
+import { Link } from "react-router-dom";
 import api from "../api";
 
 const ListAllTasks = () => {
   const [tasks, setTasks] = useState([]);
+  const [allTasks, setAllTasks] = useState([]);
   const [status, setStatus] = useState("all"); 
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -14,7 +15,13 @@ const ListAllTasks = () => {
       try {
         setIsLoading(true);
         const response = await api.get(`/task/list?status=${status}`);
-        setTasks(response.data.data || []);
+        const fetchedTasks = response.data.data || [];
+        setTasks(fetchedTasks);
+        
+        // Sync allTasks when status is "all" to keep progress accurate
+        if (status === "all") {
+          setAllTasks(fetchedTasks);
+        }
       } catch (err) {
         console.error("Error fetching tasks:", err);
         setError(err?.response?.data?.message || "Failed to load tasks");
@@ -26,6 +33,27 @@ const ListAllTasks = () => {
     fetchTasks();
   }, [status]);
 
+  // Fetch all tasks separately for progress calculation
+  useEffect(() => {
+    const fetchAllTasks = async () => {
+      try {
+        const response = await api.get(`/task/list?status=all`);
+        setAllTasks(response.data.data || []);
+      } catch (err) {
+        console.error("Error fetching all tasks for progress:", err);
+      }
+    };
+
+    fetchAllTasks();
+  }, []);
+
+  //completion percentage
+  const completedPercentage = useMemo(() => {
+    if (allTasks.length === 0) return 0;
+    const completedCount = allTasks.filter(task => task.status === "completed").length;
+    return Math.round((completedCount / allTasks.length) * 100);
+  }, [allTasks]);
+
   const handleToggleStatus = async (taskId, currentStatus) => {
     const newStatus = currentStatus === "completed" ? "pending" : "completed";
     
@@ -33,9 +61,16 @@ const ListAllTasks = () => {
       setUpdatingTasks(prev => new Set(prev).add(taskId));
       await api.patch(`/task/edit/${taskId}`, { status: newStatus });
       
-      // Update local state
+      //Update local state
       setTasks(prevTasks =>
         prevTasks.map(task =>
+          task._id === taskId ? { ...task, status: newStatus } : task
+        )
+      );
+      
+      // Update allTasks for progress calculation
+      setAllTasks(prevAllTasks =>
+        prevAllTasks.map(task =>
           task._id === taskId ? { ...task, status: newStatus } : task
         )
       );
@@ -94,6 +129,29 @@ const ListAllTasks = () => {
           </button>
         ))}
       </div>
+
+      {/* Progress Bar */}
+      {allTasks.length > 0 && (
+        <div className="mb-6 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+              Overall Progress
+            </span>
+            <span className="text-sm font-semibold text-gray-800 dark:text-gray-100">
+              {completedPercentage}%
+            </span>
+          </div>
+          <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3 overflow-hidden">
+            <div
+              className="bg-gradient-to-r from-green-500 to-green-600 dark:from-green-600 dark:to-green-700 h-full rounded-full transition-all duration-500 ease-out"
+              style={{ width: `${completedPercentage}%` }}
+            />
+          </div>
+          <div className="mt-2 text-xs text-gray-500 dark:text-gray-400">
+            {allTasks.filter(task => task.status === "completed").length} of {allTasks.length} tasks completed
+          </div>
+        </div>
+      )}
 
       {tasks.length === 0 ? (
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-12 text-center">

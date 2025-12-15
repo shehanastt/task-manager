@@ -15,6 +15,7 @@ Each user can create, update, delete, and mark tasks as completed. Tasks are pri
 
 ### Bonus Features
 - Dark / Light mode 
+- Completed percentage progress bar
 
 
 ## Tech Stack
